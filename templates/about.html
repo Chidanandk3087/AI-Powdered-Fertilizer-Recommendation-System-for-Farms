@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Fertilizer Recommender</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00C9A7;
+            --primary-light: #5DFFD9;
+            --primary-dark: #00A68C;
+            --secondary: #FF6B6B;
+            --secondary-light: #FF9E9E;
+            --accent: #845EC2;
+            --accent-light: #A68FDB;
+            --accent-dark: #6A4CA5;
+            --light: #F7F9FC;
+            --dark: #2D3748;
+            --gray: #718096;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Elements */
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+            filter: blur(1px);
+        }
+
+        .floating-element:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            top: 10%;
+            left: 5%;
+            animation-duration: 25s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            background: var(--secondary);
+            top: 60%;
+            right: 10%;
+            animation-duration: 20s;
+            animation-direction: reverse;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            background: var(--accent);
+            bottom: 20%;
+            left: 20%;
+            animation-duration: 30s;
+        }
+
+        .floating-element:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            background: var(--secondary);
+            top: 20%;
+            right: 20%;
+            animation-duration: 15s;
+            animation-direction: reverse;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            33% {
+                transform: translate(30px, -50px) rotate(120deg);
+            }
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .navbar a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 30px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .navbar a:not(.shop-btn):hover {
+            color: var(--primary);
+            background: rgba(0, 201, 167, 0.1);
+        }
+
+        .shop-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .shop-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 120px 5%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: var(--gray);
+        }
+
+        .hero-decoration {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(132, 94, 194, 0.1), rgba(0, 201, 167, 0.1));
+            top: 10%;
+            right: 10%;
+            z-index: 1;
+            animation: pulse 8s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1.1);
+                opacity: 0.4;
+            }
+        }
+
+        /* CONTENT SECTION */
+        .content {
+            max-width: 1200px;
+            margin: 0 auto 50px;
+            padding: 0 5%;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .section:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .section h2 {
+            color: var(--dark);
+            margin-bottom: 25px;
+            font-size: 2.2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            bottom: -10px;
+            left: 0;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        .section p {
+            margin-bottom: 20px;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(0, 201, 167, 0.2) 0%, rgba(0, 201, 167, 0.2) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 0.3em;
+            background-position: 0 88%;
+            transition: background-size 0.3s ease;
+            padding: 0 2px;
+            font-weight: 600;
+        }
+
+        /* ENHANCED FEATURES GRID */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px 30px;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        /* Colorful gradient overlay on hover */
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-light), var(--secondary-light));
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        /* Enhanced hover effect for feature cards */
+        .feature-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.3) rotate(10deg);
+            -webkit-text-fill-color: white;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
+        }
+
+        .feature-card h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .feature-card:hover h3 {
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* CENTERED RECOMMENDATION BUTTON */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            width: 100%;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 45px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 8px 25px rgba(0, 201, 167, 0.4);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            font-size: 1.1rem;
+        }
+
+        .back-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.7s;
+            z-index: -1;
+        }
+
+        .back-button:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 201, 167, 0.6);
+            background: linear-gradient(135deg, var(--primary-dark), var(--accent));
+        }
+
+        .back-button:hover::before {
+            left: 100%;
+        }
+
+        /* ENHANCED FERTILIZER CARDS */
+        .fert-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .fert-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        /* Colorful gradient overlay on hover */
+        .fert-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        /* Enhanced hover effect for fertilizer cards */
+        .fert-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .fert-card:hover::before {
+            opacity: 1;
+        }
+
+        .fert-img-container {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .fert-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .fert-card:hover img {
+            transform: scale(1.2);
+            filter: brightness(0.9);
+        }
+
+        .fert-info {
+            padding: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .fert-info h3 {
+            color: var(--dark);
+            margin-bottom: 12px;
+            font-size: 1.4rem;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .fert-card:hover .fert-info h3 {
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        .fert-info p {
+            color: var(--gray);
+            margin-bottom: 18px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .fert-card:hover .fert-info p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .brand-list {
+            font-size: 0.95rem;
+            color: var(--gray);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 15px;
+            transition: var(--transition);
+        }
+
+        .fert-card:hover .brand-list {
+            border-top-color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .brand-list strong {
+            color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .fert-card:hover .brand-list strong {
+            color: white;
+        }
+
+        /* USER MANUAL */
+        .user-manual-wrapper {
+            text-align: center;
+            margin: 60px 0;
+        }
+
+        .user-button {
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .user-manual-button-inner {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            padding: 18px 45px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(132, 94, 194, 0.4);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .user-manual-button-inner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.7s;
+            z-index: -1;
+        }
+
+        .user-manual-button-inner:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(132, 94, 194, 0.6);
+            background: linear-gradient(135deg, var(--accent-dark), var(--primary));
+        }
+
+        .user-manual-button-inner:hover::before {
+            left: 100%;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section {
+                padding: 30px;
+            }
+
+            .fert-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-decoration {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Elements -->
+    <div class="bg-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-seedling"></i>
+            <span>FertilizerAI</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/check_fertilizers">Check Fertilizers</a>
+            <a href="/about">About</a>
+        </div>
+        <a href="https://agribegri.com/buy-cheap-fertilizers-online-in-india.php" target="_blank" class="shop-btn">
+            <i class="fas fa-shopping-cart"></i> Shop Fertilizer
+        </a>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-decoration"></div>
+        <div class="hero-content fade-in">
+            <h1>AI-Powered Fertilizer Recommendation System</h1>
+            <p>Smart, data-driven suggestions to match your crop and soil conditions for optimal growth.</p>
+        </div>
+    </section>
+
+    <!-- CONTENT SECTION -->
+    <div class="content">
+        <div class="section fade-in">
+            <h2>About Our Fertilizer Recommendation System</h2>
+            <p>
+                This <span class="highlight">intelligent system</span> assists farmers in selecting the most suitable fertilizer for their crops.
+                It analyzes <span class="highlight">soil conditions, crop type, and environmental factors</span> using advanced machine learning
+                to provide highly accurate, personalized recommendations.
+            </p>
+            <p>
+                Our <span class="highlight">AI-powered fertilizer recommendation system</span> uses cutting-edge machine learning algorithms to analyze various data points—such as soil composition,
+                crop requirements, and local environmental conditions—to provide farmers with precise, customized fertilizer recommendations.
+                Instead of relying on general guidelines, the system uses its trained models to suggest the optimal fertilizer type, helping to improve crop yield, reduce costs,
+                and minimize environmental impact.
+            </p>
+
+            <!-- ENHANCED FEATURES GRID -->
+            <div class="features">
+                <div class="feature-card fade-in delay-1">
+                    <div class="feature-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>Crop-Specific Analysis</h3>
+                    <p>Tailored recommendations based on your specific crop requirements, growth stage, and regional conditions.</p>
+                </div>
+                <div class="feature-card fade-in delay-2">
+                    <div class="feature-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h3>Soil Nutrient Mapping</h3>
+                    <p>Comprehensive analysis of soil composition and nutrient levels for precise fertilization strategies.</p>
+                </div>
+                <div class="feature-card fade-in delay-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI-Powered Insights</h3>
+                    <p>Advanced machine learning algorithms that continuously learn and improve recommendations over time.</p>
+                </div>
+            </div>
+
+            <!-- CENTERED RECOMMENDATION BUTTON -->
+            <div class="button-container">
+                <a href="{{ url_for('recommendation') }}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Get Fertilizer Recommendation
+                </a>
+            </div>
+        </div>
+
+        <!-- ENHANCED FERTILIZER CARDS -->
+        {% if fertilizers %}
+        <div class="section fade-in">
+            <h2>Available Fertilizers</h2>
+            <div class="fert-container">
+                {% for key, fert in fertilizers.items() %}
+                <div class="fert-card fade-in">
+                    <div class="fert-img-container">
+                        <img src="{{ url_for('static', filename=fert.image) }}" alt="{{ fert.name }}">
+                    </div>
+                    <div class="fert-info">
+                        <h3>{{ fert.name }}</h3>
+                        <p>{{ fert.remark }}</p>
+                        <div class="brand-list">
+                            <strong>Popular Brands:</strong> {{ ", ".join(fert.other_brands) }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- USER MANUAL -->
+    <div class="user-manual-wrapper fade-in">
+        <a href="{{ url_for('static', filename='manual/updated.pdf') }}" target="_blank" class="user-button">
+            <button class="user-manual-button-inner">
+                <i class="fas fa-book"></i> Download User Manual
+            </button>
+        </a>
+    </div>
+
+    <script>
+        // Add scroll animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+
+            const fadeInOnScroll = function() {
+                fadeElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.style.opacity = 1;
+                        element.style.transform = 'translateY(0)';
+                    }
+                });
+            };
+
+            // Set initial state
+            fadeElements.forEach(element => {
+                element.style.opacity = 0;
+                element.style.transform = 'translateY(30px)';
+                element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            });
+
+            // Check on load
+            fadeInOnScroll();
+
+            // Check on scroll
+            window.addEventListener('scroll', fadeInOnScroll);
+
+            // Enhanced hover effects for cards
+            const cards = document.querySelectorAll('.feature-card, .fert-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-15px) scale(1.03)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

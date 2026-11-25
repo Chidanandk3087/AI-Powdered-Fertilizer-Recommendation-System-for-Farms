@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fertilizer Recommendation Result</title>
+    <link rel="icon" href="{{ url_for('static', filename='f1.jpeg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10B981;
+            --primary-light: #34D399;
+            --primary-dark: #059669;
+            --secondary: #8B5CF6;
+            --secondary-light: #A78BFA;
+            --accent: #F59E0B;
+            --accent-light: #FBBF24;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --light: #FFFFFF;
+            --light-bg: #F8FAFC;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.15);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg,
+                #667eea 0%,
+                #764ba2 25%,
+                #f093fb 50%,
+                #f5576c 75%,
+                #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text-dark);
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Background Elements */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: floatElement 25s infinite linear;
+            filter: blur(1px);
+        }
+
+        .floating-element:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            background: var(--primary-light);
+            top: 15%;
+            left: 10%;
+            animation-duration: 30s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            background: var(--secondary-light);
+            top: 65%;
+            right: 15%;
+            animation-duration: 25s;
+            animation-direction: reverse;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 120px;
+            height: 120px;
+            background: var(--accent-light);
+            bottom: 20%;
+            left: 25%;
+            animation-duration: 35s;
+        }
+
+        @keyframes floatElement {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            33% {
+                transform: translate(30px, -40px) rotate(120deg);
+            }
+            66% {
+                transform: translate(-20px, 30px) rotate(240deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo i {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .navbar a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 12px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .navbar a:not(.shop-btn)::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.1), transparent);
+            transition: 0.6s;
+        }
+
+        .navbar a:not(.shop-btn):hover::before {
+            left: 100%;
+        }
+
+        .navbar a:not(.shop-btn):hover {
+            color: var(--primary);
+            background: rgba(16, 185, 129, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .shop-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shop-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.6s;
+        }
+
+        .shop-btn:hover::before {
+            left: 100%;
+        }
+
+        .shop-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            animation: containerEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes containerEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg,
+                var(--primary),
+                var(--secondary),
+                var(--accent));
+        }
+
+        /* FERTILIZER DISPLAY */
+        .fertilizer-display {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.95),
+                rgba(248, 250, 252, 0.95));
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fertilizer-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .fertilizer-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .fertilizer-header h2 {
+            color: var(--text-dark);
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .fertilizer-type {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .fertilizer-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        /* Image Container with Beautiful Hover */
+        .image-section {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .fertilizer-image-container {
+            width: 350px;
+            height: 350px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 4px solid white;
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .fertilizer-image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg,
+                rgba(16, 185, 129, 0.1),
+                rgba(139, 92, 246, 0.1));
+            z-index: 1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .fertilizer-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+            position: relative;
+            z-index: 0;
+        }
+
+        .fertilizer-image-container:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .fertilizer-image-container:hover::before {
+            opacity: 1;
+        }
+
+        .fertilizer-image-container:hover .fertilizer-image {
+            transform: scale(1.08);
+        }
+
+        /* Info Cards with Beautiful Hover */
+        .info-grid {
+            display: grid;
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.9),
+                rgba(248, 250, 252, 0.9));
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-light));
+            transition: var(--transition);
+        }
+
+        .info-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .info-card:hover::before {
+            width: 8px;
+            background: linear-gradient(to bottom, var(--primary-light), var(--primary));
+        }
+
+        .info-card.remark::before {
+            background: linear-gradient(to bottom, var(--accent), var(--accent-light));
+        }
+
+        .info-card.remark:hover::before {
+            background: linear-gradient(to bottom, var(--accent-light), var(--accent));
+        }
+
+        .info-card.brands::before {
+            background: linear-gradient(to bottom, var(--secondary), var(--secondary-light));
+        }
+
+        .info-card.brands:hover::before {
+            background: linear-gradient(to bottom, var(--secondary-light), var(--secondary));
+        }
+
+        .info-card h3 {
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-card h3 i {
+            color: var(--primary);
+            transition: var(--transition);
+            font-size: 1.4rem;
+        }
+
+        .info-card:hover h3 i {
+            transform: scale(1.2) rotate(5deg);
+            color: var(--primary-light);
+        }
+
+        .info-card.remark h3 i {
+            color: var(--accent);
+        }
+
+        .info-card.remark:hover h3 i {
+            color: var(--accent-light);
+        }
+
+        .info-card.brands h3 i {
+            color: var(--secondary);
+        }
+
+        .info-card.brands:hover h3 i {
+            color: var(--secondary-light);
+        }
+
+        /* PREDICTIONS SECTION */
+        .predictions-section {
+            margin-top: 50px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .prediction-card {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.9),
+                rgba(248, 250, 252, 0.9));
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .prediction-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: var(--transition);
+        }
+
+        .prediction-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .prediction-card:hover::before {
+            height: 100%;
+            opacity: 0.03;
+        }
+
+        .prediction-card.ensemble {
+            background: linear-gradient(135deg,
+                rgba(245, 158, 11, 0.1),
+                rgba(255, 255, 255, 0.9));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .prediction-card.ensemble::before {
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        }
+
+        .prediction-card h4 {
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .prediction-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            position: relative;
+            z-index: 1;
+        }
+
+        .prediction-card.ensemble .prediction-value {
+            color: var(--accent);
+        }
+
+        /* BUTTONS */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 50px;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            text-decoration: none;
+            border-radius: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+            font-size: 1.1rem;
+        }
+
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.6s;
+        }
+
+        .action-button:hover::before {
+            left: 100%;
+        }
+
+        .action-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .action-button.secondary {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .action-button.secondary:hover {
+            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.4);
+        }
+
+        /* FLOATING PDF BUTTON */
+        .pdf-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+            transition: var(--transition);
+            z-index: 1000;
+            font-size: 1.8rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: gentlePulse 3s infinite;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 12px 35px rgba(245, 158, 11, 0.5);
+            }
+        }
+
+        .pdf-float:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 18px 45px rgba(245, 158, 11, 0.6);
+            animation: none;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .container {
+                margin: 30px 20px;
+                padding: 30px 25px;
+            }
+
+            .fertilizer-image-container {
+                width: 280px;
+                height: 280px;
+            }
+
+            .prediction-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-button {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        /* No Result State */
+        .no-result {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-result-icon {
+            font-size: 4rem;
+            color: var(--warning);
+            margin-bottom: 24px;
+            filter: drop-shadow(0 4px 8px rgba(245, 158, 11, 0.3));
+        }
+
+        .no-result h2 {
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .no-result p {
+            color: var(--text-light);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-seedling"></i>
+            <span>FertilizerAI</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/check_fertilizers">Check Fertilizers</a>
+            <a href="/about">About</a>
+        </div>
+        <a href="https://agribegri.com/buy-cheap-fertilizers-online-in-india.php" target="_blank" class="shop-btn">
+            <i class="fas fa-shopping-cart"></i> Shop Fertilizer
+        </a>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        {% if result %}
+            <!-- Fertilizer Display -->
+            <div class="fertilizer-display">
+                <div class="fertilizer-header">
+                    <h2>Recommended Fertilizer</h2>
+                    <div class="fertilizer-type">{{ result.type }}</div>
+                    <div class="fertilizer-name">{{ result.name }}</div>
+                </div>
+
+                <div class="image-section">
+                    <div class="fertilizer-image-container">
+                        <img src="{{ url_for('static', filename=result.image) }}" alt="{{ result.name }}" class="fertilizer-image">
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card remark">
+                        <h3><i class="fas fa-lightbulb"></i> Remark</h3>
+                        <p>{{ result.remark }}</p>
+                    </div>
+
+                    {% if result.other_brands %}
+                    <div class="info-card brands">
+                        <h3><i class="fas fa-tags"></i> Available Brands</h3>
+                        <p>{{ ", ".join(result.other_brands) }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Model Predictions -->
+            {% if all_predictions %}
+            <div class="predictions-section">
+                <div class="section-title">
+                    <h3>Model Predictions</h3>
+                </div>
+                <div class="prediction-grid">
+                    {% for model, pred in all_predictions.items() %}
+                    <div class="prediction-card {% if model == 'Ensemble Result' %}ensemble{% endif %}">
+                        <h4>{{ model }}</h4>
+                        <div class="prediction-value">{{ pred }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <a href="{{ url_for('recommendation') }}" class="action-button">
+                    <i class="fas fa-redo"></i> Try Again
+                </a>
+                <a href="/check_fertilizers" class="action-button secondary">
+                    <i class="fas fa-list"></i> Check All Fertilizers
+                </a>
+            </div>
+
+        {% else %}
+            <!-- No Result State -->
+            <div class="no-result">
+                <div class="no-result-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2>No Recommendation Available</h2>
+                <p>Please try again with different values to get a fertilizer recommendation.</p>
+                <div class="button-group">
+                    <a href="{{ url_for('recommendation') }}" class="action-button">
+                        <i class="fas fa-redo"></i> Try Again
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Floating PDF Button -->
+    <div class="pdf-float" title="Download PDF">
+        <i class="fas fa-file-pdf"></i>
+    </div>
+
+    <!-- jsPDF + autoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pdfButton = document.querySelector(".pdf-float");
+
+            pdfButton.addEventListener("click", function () {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF("p", "mm", "a4");
+
+                // Title
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(20);
+                doc.setTextColor(16, 185, 129);
+                doc.text("AI-Powered Fertilizer Recommendation", doc.internal.pageSize.width / 2, 25, { align: "center" });
+
+                // Subheading
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text("Smart, data-driven suggestions for optimal crop growth", doc.internal.pageSize.width / 2, 35, { align: "center" });
+
+                // Line separator
+                doc.setDrawColor(16, 185, 129);
+                doc.setLineWidth(0.5);
+                doc.line(20, 42, 190, 42);
+
+                // Fertilizer Recommendation
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(16);
+                doc.setTextColor(0, 0, 0);
+                doc.text("Recommended Fertilizer", 20, 60);
+
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(14);
+                doc.setTextColor(16, 185, 129);
+                doc.text("{{ result.name }}", 20, 70);
+
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+                doc.text("Type: {{ result.type }}", 20, 80);
+
+                // Remark
+                doc.setFont("helvetica", "bold");
+                doc.text("Remark:", 20, 95);
+                doc.setFont("helvetica", "normal");
+                let remarkText = doc.splitTextToSize("{{ result.remark }}", 170);
+                doc.text(remarkText, 20, 105);
+
+                let currentY = 105 + (remarkText.length * 6);
+
+                // Available Brands
+                doc.setFont("helvetica", "bold");
+                doc.text("Available Brands:", 20, currentY + 10);
+                doc.setFont("helvetica", "normal");
+                let brandsText = "{{ ', '.join(result.other_brands) if result.other_brands else 'N/A' }}";
+                let brandsSplit = doc.splitTextToSize(brandsText, 170);
+                doc.text(brandsSplit, 20, currentY + 20);
+
+                // Model Predictions Table
+                const tableData = [
+                    {% for model, pred in all_predictions.items() %}
+                        ["{{ model }}", "{{ pred }}"],
+                    {% endfor %}
+                ];
+                tableData.push(["Final Recommendation", "{{ result.name }}"]);
+
+                doc.autoTable({
+                    head: [["Model", "Prediction"]],
+                    body: tableData,
+                    startY: currentY + 40,
+                    theme: "grid",
+                    headStyles: {
+                        fillColor: [16, 185, 129],
+                        textColor: [255, 255, 255],
+                        fontStyle: 'bold'
+                    },
+                    styles: {
+                        halign: "center",
+                        cellPadding: 5
+                    },
+                    bodyStyles: {
+                        valign: "middle"
+                    },
+                    didParseCell: function (data) {
+                        if (data.row.raw[0] === "Final Recommendation") {
+                            data.cell.styles.fillColor = [245, 158, 11];
+                            data.cell.styles.textColor = [0, 0,

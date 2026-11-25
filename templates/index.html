@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fertilizer Recommendation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00C9A7;
+            --primary-dark: #00A68C;
+            --secondary: #FF6B6B;
+            --accent: #845EC2;
+            --light: #F7F9FC;
+            --dark: #2D3748;
+            --gray: #718096;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Elements */
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            top: 10%;
+            left: 5%;
+            animation-duration: 25s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            background: var(--secondary);
+            top: 60%;
+            right: 10%;
+            animation-duration: 20s;
+            animation-direction: reverse;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            background: var(--accent);
+            bottom: 20%;
+            left: 20%;
+            animation-duration: 30s;
+        }
+
+        .floating-element:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            background: var(--secondary);
+            top: 20%;
+            right: 20%;
+            animation-duration: 15s;
+            animation-direction: reverse;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            33% {
+                transform: translate(30px, -50px) rotate(120deg);
+            }
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .navbar a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 30px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .navbar a:not(.shop-btn):hover {
+            color: var(--primary);
+            background: rgba(0, 201, 167, 0.1);
+        }
+
+        .shop-btn {
+            background: linear-gradient(135deg, var(--secondary), #FF8E8E);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .shop-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--dark);
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        /* FORM STYLING */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            z-index: 1;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.8);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.2);
+            background: white;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: var(--transition);
+            border: none;
+            padding: 16px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 201, 167, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 201, 167, 0.4);
+        }
+
+        /* RESULT STYLING */
+        .result, .error {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result {
+            background: linear-gradient(135deg, rgba(200, 230, 201, 0.9), rgba(129, 199, 132, 0.9));
+            color: #2e7d32;
+            border-left: 5px solid #4CAF50;
+        }
+
+        .error {
+            background: linear-gradient(135deg, rgba(255, 205, 210, 0.9), rgba(239, 154, 154, 0.9));
+            color: #c62828;
+            border-left: 5px solid #f44336;
+        }
+
+        /* FORM LAYOUT */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .container {
+                margin: 30px 20px;
+                padding: 30px 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Elements -->
+    <div class="bg-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-seedling"></i>
+            <span>FertilizerAI</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/check_fertilizers">Check Fertilizers</a>
+            <a href="/about">About</a>
+        </div>
+        <a href="https://agribegri.com/buy-cheap-fertilizers-online-in-india.php" target="_blank" class="shop-btn">
+            <i class="fas fa-shopping-cart"></i> Shop Fertilizer
+        </a>
+    </nav>
+
+    <div class="container">
+        <h2>Fertilizer Recommendation System</h2>
+
+        {% if result %}
+        <div class="result">
+            <i class="fas fa-check-circle"></i> Recommended Fertilizer: <strong>{{ result.name }}</strong><br>
+            Remark: {{ result.remark }}
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="error">
+            <i class="fas fa-exclamation-triangle"></i> Error: {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post" action="/predict">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="Temperature">Temperature</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-thermometer-half"></i>
+                        <input type="number" id="Temperature" name="Temperature" step="any" required placeholder="°C">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Moisture">Moisture</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-tint"></i>
+                        <input type="number" id="Moisture" name="Moisture" step="any" required placeholder="%">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="Rainfall">Rainfall</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-cloud-rain"></i>
+                        <input type="number" id="Rainfall" name="Rainfall" step="any" required placeholder="mm">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="PH">PH</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-vial"></i>
+                        <input type="number" id="PH" name="PH" step="any" required placeholder="pH level">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="Nitrogen">Nitrogen</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-atom"></i>
+                        <input type="number" id="Nitrogen" name="Nitrogen" step="any" required placeholder="N level">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Phosphorous">Phosphorous</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-atom"></i>
+                        <input type="number" id="Phosphorous" name="Phosphorous" step="any" required placeholder="P level">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="Potassium">Potassium</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-atom"></i>
+                        <input type="number" id="Potassium" name="Potassium" step="any" required placeholder="K level">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Carbon">Carbon</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-leaf"></i>
+                        <input type="number" id="Carbon" name="Carbon" step="any" required placeholder="C level">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="Soil">Soil Type</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-mountain"></i>
+                        <select id="Soil" name="Soil" required>
+                            {% for s in soil_types %}
+                                <option value="{{ s }}">{{ s }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Crop">Crop Type</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-seedling"></i>
+                        <select id="Crop" name="Crop" required>
+                            {% for c in crop_types %}
+                                <option value="{{ c }}">{{ c }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-magic"></i> Recommend Fertilizer
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Add subtle animation to form elements on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach((group, index) => {
+                group.style.opacity = '0';
+                group.style.transform = 'translateY(20px)';
+                group.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+
+                setTimeout(() => {
+                    group.style.opacity = '1';
+                    group.style.transform = 'translateY(0)';
+                }, 100 + (index * 50));
+            });
+
+            // Add focus effects to inputs
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'scale(1.02)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
